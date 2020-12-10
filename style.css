@@ -19,3 +19,15 @@ body {
 .next-red {
     background-color: red;
 }
+
+.col.red {
+    background-color: red;
+}
+
+.col.blue {
+    background-color: blue;
+}
+
+.next-blue {
+    background-color: blue;
+}
