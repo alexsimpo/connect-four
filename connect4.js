@@ -6,6 +6,7 @@ class Connect4 {
         this.selector = selector;
         this.createGrid();
         this.setupEventListeners();
+        this.checkForWinner();
     }
 
     createGrid() {
@@ -57,7 +58,57 @@ class Connect4 {
             const $lastEmptyCell = findLastEmptyCell(col);
             $lastEmptyCell.removeClass('empty');
             $lastEmptyCell.addClass(that.player);
+            $lastEmptyCell.data('player', that.player);
+
+            const winner = that.checkForWinner(row, col)
+            if (winner) {
+                alert(`Game Over, player ${that.player} has won.`);
+                return;
+            };
+
             that.player = (that.player === 'red') ? 'blue' : 'red';
         });
+    }
+
+    checkForWinner(row, col) {
+        const that = this;
+
+        function $getCell(i, j) {
+            return $(`.col[data-row='${i}'][data-col='${j}']`);
+        }
+
+        function checkDirection(direction) {
+            let total = 0;
+            let i = row + direction.i;
+            let j = col + direction.j;
+            let $next = $getCell(i, j);
+            while (i >= 0 && 
+                i < that.rows &&
+                j >= 0 &&
+                j < that.cols &&
+                $next.data('player') === that.player) {
+                    total++;
+                    i += direction.i;
+                    j += direction.j;
+                    $next = $getCell(i, j);
+                }
+        }
+
+        function checkWin(directionA, directionB) {
+            const total = 1 +
+                checkDirection(directionA) +
+                checkDirection(directionB);
+            if (total >= 4) {
+                return that.player;
+            } else {
+                return null;
+            }
+        }
+
+        function checkVerticals() {
+            return checkWin({i: -1, j:0}, {i: 1, j: 0});
+        }
+
+        return checkVerticals() 
     }
 }
