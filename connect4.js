@@ -4,6 +4,8 @@ class Connect4 {
         this.cols = 7;
         this.player = 'red';
         this.selector = selector;
+        this.isGameOver = false;
+        this.onPlayerMove() = function() {};
         this.createGrid();
         this.setupEventListeners();
         this.checkForWinner();
@@ -11,7 +13,10 @@ class Connect4 {
 
     createGrid() {
         const $board = $(this.selector);
+        $board.empty();
         console.log($board);
+        this.isGameOver = false;
+        this.player = 'red';
         for (let row = 0; row < this.rows; row++) {
             const $row = $('<div>')
                 .addClass('row');
@@ -53,6 +58,7 @@ class Connect4 {
         });
 
         $board.on('click', '.col.empty', function() {
+            if (that.isGameOver) return;
             const col = $(this).data('col');
             const row = $(this).data('row');
             const $lastEmptyCell = findLastEmptyCell(col);
@@ -62,10 +68,12 @@ class Connect4 {
 
             const winner = that.checkForWinner(row, col)
             if (winner) {
+                that.isGameOver = true;
                 alert(`Game Over, player ${that.player} has won.`);
+                $('.col.empty').removeClass('empty');
                 return;
             };
-
+            that.onPlayerMove();
             that.player = (that.player === 'red') ? 'blue' : 'red';
         });
     }
@@ -92,6 +100,7 @@ class Connect4 {
                     j += direction.j;
                     $next = $getCell(i, j);
                 }
+            return total;
         }
 
         function checkWin(directionA, directionB) {
@@ -105,10 +114,26 @@ class Connect4 {
             }
         }
 
+        function checkDiagonalBLtoTR() {
+            return checkWin({i: 1, j:-1}, {i: 1, j: 1});
+        }
+
+        function checkDiagonalTLtoBR() {
+            return checkWin({i: 1, j:1}, {i: -1, j: -1});
+        }
+
         function checkVerticals() {
             return checkWin({i: -1, j:0}, {i: 1, j: 0});
         }
 
-        return checkVerticals() 
+        function checkHorizontals() {
+            return checkWin({i: 0, j:-1}, {i: 0, j: 1});
+        }
+
+        return checkVerticals() || checkHorizontals() || checkDiagonalTLtoBR() ||checkDiagonalBLtoTR();
+    }
+
+    restart() {
+        this.createGrid();
     }
 }
