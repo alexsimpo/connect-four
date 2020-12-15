@@ -8,5 +8,6 @@ $(document).ready(function(){
 
     $('#restart').click(function() {
         connect4.restart();
+        $('#player').text(connect4.player);
     })
 });

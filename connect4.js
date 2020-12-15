@@ -5,7 +5,6 @@ class Connect4 {
         this.player = 'red';
         this.selector = selector;
         this.isGameOver = false;
-        this.onPlayerMove() = function() {};
         this.createGrid();
         this.setupEventListeners();
         this.checkForWinner();
@@ -73,8 +72,8 @@ class Connect4 {
                 $('.col.empty').removeClass('empty');
                 return;
             };
-            that.onPlayerMove();
             that.player = (that.player === 'red') ? 'blue' : 'red';
+            that.onPlayerMove();
         });
     }
 
